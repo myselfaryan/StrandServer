@@ -105,6 +105,19 @@ int ParsedHeader_remove (struct ParsedRequest *pr, const char * key);
 /* debug() prints out debugging info if DEBUG is set to 1 */
 void debug(const char * format, ...);
 
+/* Enhancement: Add error code enums for better error handling */
+
+typedef enum {
+    PARSE_OK = 0,
+    PARSE_ERR_MEMORY = -1,
+    PARSE_ERR_FORMAT = -2,
+    PARSE_ERR_UNSUPPORTED = -3,
+    PARSE_ERR_NOTFOUND = -4
+} ParseResult;
+
+/* Enhancement: Add API for error string */
+const char* ParsedRequest_strerror(int code);
+
 /* Example usage:
 
    const char *c = 
