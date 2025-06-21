@@ -1,61 +1,110 @@
 # StrandServer
 
-StrandServer is a simple HTTP proxy server with caching capabilities. It parses HTTP requests, forwards them to the appropriate remote server, and caches the responses to improve performance for subsequent requests.
+StrandServer is a high-performance, multi-threaded HTTP proxy server with caching, designed for learning and experimentation. It efficiently parses HTTP requests, forwards them to remote servers, and caches responses to accelerate repeated requests. Built in C, it demonstrates core networking, concurrency, and caching concepts.
 
-## Features
+---
 
-- Parses HTTP requests and responses.
-- Supports GET method.
-- Caches responses to reduce load on remote servers.
-- Handles multiple client requests concurrently using threads.
-- Limits the number of concurrent clients and cache size.
+## ✨ Features
 
-## Files
+- **HTTP Request Parsing:** Robust parsing of HTTP/1.0 and HTTP/1.1 GET requests.
+- **Caching:** In-memory LRU cache for fast repeated responses.
+- **Concurrency:** Handles hundreds of clients using POSIX threads and semaphores.
+- **Error Handling:** Graceful responses for common HTTP errors (400, 403, 404, 500, 501, 505).
+- **Customizable:** Easily adjust cache size, element size, and client limits.
 
-- `proxy_parse.h`: Header file for the HTTP request parsing library.
-- `proxy_parse.c`: Implementation of the HTTP request parsing library.
-- `proxy_server_with_cache.c`: Implementation of the proxy server with caching.
+---
 
-## Usage
+## 📁 Project Structure
 
-### Compilation
+- `proxy_parse.h` & `proxy_parse.c`  
+  HTTP request parsing library (structs, parsing, header management).
+- `proxy_server_with_cache.c`  
+  Main proxy server logic, client handling, caching, and networking.
+- `Makefile`  
+  (Optional) For easy compilation.
 
-To compile the project, use the following command:
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+
+```sh
+git clone https://github.com/myselfaryan/StrandServer.git
+cd StrandServer
+```
+
+### 2. Build
 
 ```sh
 gcc -o proxy_server_with_cache proxy_server_with_cache.c proxy_parse.c -lpthread
 ```
 
-### Running the Server
+Or use the provided Makefile:
 
-To run the server, use the following command:
+```sh
+make
+```
+
+### 3. Run the Proxy Server
 
 ```sh
 ./proxy_server_with_cache <port_number>
 ```
 
-Replace `<port_number>` with the desired port number for the proxy server.
-
-### Example
+Example:
 
 ```sh
 ./proxy_server_with_cache 8080
 ```
 
-## Code Structure
+---
 
-### `proxy_parse.h`
+## 🛠️ Usage
 
-This file contains the declarations for the HTTP request parsing library. It includes the `ParsedRequest` and `ParsedHeader` structures and function declarations for creating, parsing, and destroying parsed requests.
+- Configure your browser or HTTP client to use `localhost:<port_number>` as the HTTP proxy.
+- The server will cache responses for repeated GET requests, improving speed for subsequent requests.
+- Logs client connections and cache hits to the console.
 
-### `proxy_parse.c`
+---
 
-This file contains the implementation of the HTTP request parsing library. It includes functions for creating, parsing, and destroying parsed requests, as well as functions for handling headers.
+## 🧩 How It Works
 
-### `proxy_server_with_cache.c`
+1. **Client connects** to the proxy and sends an HTTP GET request.
+2. **Request is parsed** using the custom parsing library.
+3. **Cache is checked** for a matching response (LRU eviction policy).
+4. If **cache miss**, the proxy connects to the remote server, forwards the request, and caches the response.
+5. **Response is sent** back to the client.
 
-This file contains the implementation of the proxy server with caching. It includes functions for handling client requests, connecting to remote servers, and managing the cache.
+---
 
-## License
+## 📚 Example Code Snippet
 
-This project is licensed under the MIT License.
+```c
+// Create and parse a request
+ParsedRequest *req = ParsedRequest_create();
+if (ParsedRequest_parse(req, buffer, len) < 0) {
+    printf("parse failed\n");
+}
+// Access fields
+printf("Method: %s\nHost: %s\n", req->method, req->host);
+ParsedRequest_destroy(req);
+```
+
+---
+
+## 📝 License
+
+MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+## 🤝 Contributing
+
+Pull requests and suggestions are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+
+
+
