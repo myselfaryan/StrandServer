@@ -419,3 +419,15 @@ int ParsedRequest_printRequestLine(struct ParsedRequest *pr, char *buf, size_t b
     *tmp = current - buf;
     return 0;
 }
+
+// Enhancement: Error code to string for diagnostics
+const char* ParsedRequest_strerror(int code) {
+    switch (code) {
+        case 0: return "Success";
+        case -1: return "Memory allocation failed";
+        case -2: return "Malformed request or header";
+        case -3: return "Unsupported request or feature";
+        case -4: return "Not found";
+        default: return "Unknown error";
+    }
+}
